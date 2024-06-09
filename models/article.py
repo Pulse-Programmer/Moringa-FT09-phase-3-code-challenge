@@ -72,7 +72,7 @@ class Article:
     
     @classmethod
     def instance_from_db(cls, row):
-        """Return an Employee object having the attribute values from the table row."""
+        """Return an article object having the attribute values from the table row."""
 
         # Check the dictionary for  existing instance using the row's primary key
         article = cls.all.get(row[0])

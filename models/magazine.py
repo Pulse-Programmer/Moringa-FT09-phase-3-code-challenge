@@ -64,7 +64,7 @@ class Magazine:
 
     @classmethod
     def instance_from_db(cls, row):
-        """Return an magazine object having the attribute values from the table row."""
+        """Return a magazine object having the attribute values from the table row."""
 
         # Check the dictionary for  existing instance using the row's primary key
         magazine = cls.all.get(row[0])
