@@ -33,7 +33,19 @@ class Magazine:
         else:
             raise TypeError("Name must be of type str and longer than 0 characters")
         
-        
+    
+    @property
+    def category(self):
+        return self._category
+    
+    @category.setter
+    def category(self, category):
+        if isinstance(category, str) and len(category):
+            self._category = category
+        else:
+            raise TypeError("Category must be of type str and longer than 0 characters")
+                            
+                            
         
     def save(self):
         conn = get_db_connection()
