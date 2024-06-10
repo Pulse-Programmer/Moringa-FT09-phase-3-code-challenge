@@ -124,4 +124,46 @@ class Magazine:
         
         return [Author.instance_from_db(row) for row in rows]
     
+    # from models.article import Article
+
+    def article_titles(self):
+        """Returns a list of the titles of all articles written for the magazine."""
+        
+        sql = """
+        SELECT articles.title FROM articles
+        INNER JOIN magazines
+        ON articles.magazine_id = magazines.id
+        WHERE magazines.id =?
+        """
+        
+        rows = cursor.execute(sql, (self.id,)).fetchall()
+        
+        if rows:
+            return [row[0] for row in rows]
+        else:
+            return None
+
     
+
+    def contributing_authors(self):
+        
+        from models.author import Author
+        """Returns a list of authors who have written more than 2 articles for the magazine."""
+        
+        sql = """
+        SELECT authors.id, authors.name FROM authors
+        INNER JOIN articles
+        ON authors.id = articles.author_id
+        INNER JOIN magazines
+        ON articles.magazine_id = magazines.id
+        WHERE magazines.id =?
+        GROUP BY authors.id
+        HAVING COUNT(articles.id) > 2
+        """
+        
+        rows = cursor.execute(sql, (self.id,)).fetchall()
+        
+        if rows:
+            return [Author(row[0], row[1]) for row in rows]
+        else:
+            return None
