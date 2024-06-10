@@ -1,28 +1,40 @@
 from database.connection import get_db_connection
+import ipdb
 
 conn = get_db_connection()
 cursor = conn.cursor()
 class Magazine:
     
-    all={}
-    def __init__(self, name, category, id=None):
+    all = {}
+    def __init__(self, id=None, name="name", category="cat"):
         self.id = id
         self.name = name
         self.category = category
         self.save()
+       
 
     def __repr__(self):
         return f'<Magazine {self.name}>'
 
 
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, Magazine):
+            return False
+        return self.id == value.id and self.name == value.name and self.category == value.category
+    
+    def __hash__(self) -> int:
+        return hash((self.id, self.name, self.category))
+    
+    
     @property
     def id(self):
         return self._id
     
     @id.setter
-    def id(self, id):
+    def id(self, id):       
         if isinstance(id, int):
             self._id = id
+           
         else:
             raise TypeError("id must be of type int")
 
@@ -36,7 +48,7 @@ class Magazine:
         if isinstance(name, str) and (2<=len(name)<=16):
             self._name = name
         else:
-            raise TypeError("Name must be of type str and longer than 0 characters")
+            raise TypeError("Name must be of type str and longer than one characters")
         
     
     @property
@@ -54,11 +66,10 @@ class Magazine:
         
     def save(self):
         
-        
+        # ipdb.set_trace()
         cursor.execute('INSERT INTO magazines (name, category) VALUES (?,?)', (self.name, self.category))
         conn.commit()
-        conn.close()
-        
+        # conn.close()
         self.id = cursor.lastrowid
     
 
@@ -75,8 +86,7 @@ class Magazine:
             
         else:
             # not in dictionary, create new instance and add to dictionary
-            magazine = cls(row[1], row[2])
-            magazine.id = row[0]
+            magazine = cls(row[1], row[2], row[0])
             cls.all[magazine.id] = magazine
         return magazine
     
@@ -86,7 +96,7 @@ class Magazine:
         from models.article import Article
         
         sql = """
-        SELECT articles.id, articles.title, articles.content FROM articles
+        SELECT articles.* FROM articles
         INNER JOIN magazines
         ON articles.magazine_id = magazines.id
         WHERE magazines.id = ?
@@ -113,3 +123,5 @@ class Magazine:
         rows = cursor.execute(sql, (self.id,)).fetchall()
         
         return [Author.instance_from_db(row) for row in rows]
+    
+    

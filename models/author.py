@@ -5,7 +5,7 @@ cursor = conn.cursor()
 class Author:
     
     all = {}
-    def __init__(self, name, id=None):
+    def __init__(self, id=None, name="author_name"):
         self.id = id
         self.name = name
         self.save()
@@ -13,7 +13,16 @@ class Author:
     def __repr__(self):
         return f'<Author {self.name}>'
 
-
+    
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, Author):
+            return False
+        return self.id == value.id and self.name == value.name
+    
+    
+    def __hash__(self) -> int:
+        return hash((self.id, self.name))
+    
     @property
     def id(self):
         return self._id
@@ -41,7 +50,6 @@ class Author:
         
         cursor.execute('INSERT INTO authors (name) VALUES (?)', (self.name,))
         conn.commit()
-        conn.close()
         
         self.id = cursor.lastrowid
         

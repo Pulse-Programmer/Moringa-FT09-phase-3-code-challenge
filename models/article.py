@@ -7,7 +7,7 @@ cursor = conn.cursor()
 class Article:
     
     all = {}
-    def __init__(self, title, content, author_id, magazine_id, id=None):
+    def __init__(self, id=None, title="title", content="content", author_id=1, magazine_id=1):
         self.id = id
         self.title = title
         self.content = content
@@ -19,6 +19,14 @@ class Article:
         return f'<Article {self.title}>'
 
 
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, Article):
+            return False
+        return (self.id == value.id and self.title == value.title and self.content == value.content and self.author_id == value.author_id and self.magazine_id == value.magazine_id)
+    
+    def __hash__(self) -> int:
+        return hash((self.id, self.title, self.content, self.author_id, self.magazine_id))
+    
     @property
     def title(self):
         return self._title
@@ -36,7 +44,6 @@ class Article:
         
         cursor.execute('INSERT INTO articles (title, content, author_id, magazine_id) VALUES (?,?,?,?)', (self.title, self.content, self.author_id, self.magazine_id))
         conn.commit()
-        conn.close()
         
         self.id = cursor.lastrowid
         
@@ -58,7 +65,7 @@ class Article:
     def magazine(self):
         
         sql = """
-        SELECT magazines.id, magazines.name, magazines.category FROM magazines
+        SELECT magazines.* FROM magazines
         INNER JOIN articles
         ON magazines.id = articles.magazine_id
         WHERE magazines.id = ?

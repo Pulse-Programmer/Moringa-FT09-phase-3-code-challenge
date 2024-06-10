@@ -4,12 +4,15 @@ def create_tables():
     conn = get_db_connection()
     cursor = conn.cursor()
     
+    # Create authors table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS authors (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL
         )
     ''')
+    
+    # Create magazines table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS magazines (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -17,6 +20,8 @@ def create_tables():
             category TEXT NOT NULL
         )
     ''')
+    
+    # Create articles table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS articles (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
