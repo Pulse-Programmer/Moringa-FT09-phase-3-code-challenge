@@ -28,6 +28,7 @@ class TestAuthor(unittest.TestCase):
         author1 = Author(1, "John Doe")
         author2 = Author(2, "Jane Doe")
         self.assertNotEqual(author1, author2)
+        
 
 class TestMagazine(unittest.TestCase):
 
@@ -56,7 +57,11 @@ class TestMagazine(unittest.TestCase):
         # Assert: Verify that the method returns a list of titles for multiple articles
         self.assertEqual(result, ["Article 1", "Article 2", "Article 3"])
         
-    
+    def test_magazine_equality(self):
+        magazine1 = Magazine(1, "Tech Monthly", "Technology")
+        magazine2 = Magazine(1, "Tech Monthly", "Technology")
+        self.assertNotEqual(magazine1.id, magazine2.id)
+
     
 class TestArticle(unittest.TestCase):
 
