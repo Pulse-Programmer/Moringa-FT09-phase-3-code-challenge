@@ -47,11 +47,19 @@ class Author:
             raise TypeError("Name must be of type str and longer than 0 characters")
        
     def save(self):
-        
-        cursor.execute('INSERT INTO authors (name) VALUES (?)', (self.name,))
+        # Check for existing author
+        cursor.execute('SELECT * FROM authors WHERE name = ?', (self.name,))
+        author = cursor.fetchone()
+        if author is None:
+            # Create an author
+            cursor.execute('INSERT INTO authors (name) VALUES (?)', (self.name,))
+            self.id = cursor.lastrowid
+        else:
+            self.id = author[0]
+        # cursor.execute('INSERT INTO authors (name) VALUES (?)', (self.name,))
         conn.commit()
         
-        self.id = cursor.lastrowid
+        # self.id = cursor.lastrowid
         
         
     @classmethod

@@ -65,12 +65,19 @@ class Magazine:
                             
         
     def save(self):
+        cursor.execute('SELECT * FROM magazines WHERE name = ? AND category = ?', (self.name, self.category))
+        magazine = cursor.fetchone()
+        if magazine is None:
+        # Create a magazine
+            cursor.execute('INSERT INTO magazines (name, category) VALUES (?,?)', (self.name, self.category))
+            self.id = cursor.lastrowid
+        else:
+            self.id = magazine[0]
         
-        # ipdb.set_trace()
-        cursor.execute('INSERT INTO magazines (name, category) VALUES (?,?)', (self.name, self.category))
+        # cursor.execute('INSERT INTO magazines (name, category) VALUES (?,?)', (self.name, self.category))
         conn.commit()
-        # conn.close()
-        self.id = cursor.lastrowid
+       
+        # self.id = cursor.lastrowid
     
 
     @classmethod
@@ -86,7 +93,7 @@ class Magazine:
             
         else:
             # not in dictionary, create new instance and add to dictionary
-            magazine = cls(row[1], row[2], row[0])
+            magazine = cls(row[0], row[1], row[2])
             cls.all[magazine.id] = magazine
         return magazine
     

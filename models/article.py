@@ -41,11 +41,18 @@ class Article:
     
     
     def save(self):
-        
-        cursor.execute('INSERT INTO articles (title, content, author_id, magazine_id) VALUES (?,?,?,?)', (self.title, self.content, self.author_id, self.magazine_id))
+        cursor.execute('SELECT * FROM articles WHERE title = ?', (self.title,))
+        article = cursor.fetchone()
+        if article is None:
+            # Create an article
+            cursor.execute('INSERT INTO articles (title, content, author_id, magazine_id) VALUES (?, ?, ?, ?)',
+                       (self.title, self.content, self.author_id, self.magazine_id))
+        else:
+            print("Article already exists.")
+        # cursor.execute('INSERT INTO articles (title, content, author_id, magazine_id) VALUES (?,?,?,?)', (self.title, self.content, self.author_id, self.magazine_id))
         conn.commit()
         
-        self.id = cursor.lastrowid
+        # self.id = cursor.lastrowid
         
         
     def author(self):
