@@ -37,6 +37,8 @@ def main():
     cursor.execute('INSERT INTO articles (title, content, author_id, magazine_id) VALUES (?, ?, ?, ?)',
                    (article_title, article_content, author_id, magazine_id))
 
+    # Commit the changes
+
     conn.commit()
 
     # Query the database for inserted records. 
@@ -56,16 +58,25 @@ def main():
     # Display results
     print("\nMagazines:")
     for magazine in magazines:
-        print(Magazine(magazine[0], magazine[1], magazine[2]))
+        if magazine[0] and magazine[1] and magazine[2]:
+            print(Magazine(magazine[0], magazine[1], magazine[2]))  
+            
+            print("\n Aggregate methods:")
+            mag1 = Magazine(magazine[0], magazine[1], magazine[2])
+            print("Titles of all articles: ",mag1.article_titles())
+            print("Authors with more than two articles: ",mag1.contributing_authors())
 
     print("\nAuthors:")
     for author in authors:
-        print(Author(author[0], author[1]))
+        if author[0] and author[1]:
+            print(Author(author[0], author[1]))  
 
     print("\nArticles:")
     for article in articles:
-        print(Article(article[0], article[1], article[2], article[3], article[4]))
+        if article[0] and article[1] and article[2] and article[3] and article[4]:
+            print(Article(article[0], article[1], article[2], article[3], article[4]))
 
+   
 
 if __name__ == "__main__":
     main()
